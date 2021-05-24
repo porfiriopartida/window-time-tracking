@@ -1,0 +1,7 @@
+spring:
+  name: Time Tracking
+  main:
+    web-application-type: NONE
+
+server:
+  port: 7778
