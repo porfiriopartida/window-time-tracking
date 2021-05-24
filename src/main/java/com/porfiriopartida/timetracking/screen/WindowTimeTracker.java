@@ -2,7 +2,7 @@ package com.porfiriopartida.timetracking.screen;
 
 import com.porfiriopartida.exception.ConfigurationValidationException;
 import com.porfiriopartida.screen.application.ScreenApplication;
-import org.junit.platform.commons.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -57,7 +57,7 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
     public void run() {
         long saveDelay = 0;
         while(true){
-            if(StringUtils.isBlank(application)){
+            if(StringUtils.isEmpty(application)){
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -83,7 +83,7 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
     }
 
     private void trackTime() {
-        if(StringUtils.isBlank(application)){
+        if(StringUtils.isEmpty(application)){
             return;
         }
         if(!appTimeMap.containsKey(application)){
