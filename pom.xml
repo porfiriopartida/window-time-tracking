@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.porfiriopartida</groupId>
 	<artifactId>time-tracking</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>time-tracking</name>
 	<description>Logs the time spent in some apps defined in the configuration.csv</description>
 	<properties>
