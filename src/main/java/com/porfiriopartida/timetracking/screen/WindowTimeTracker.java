@@ -3,6 +3,8 @@ package com.porfiriopartida.timetracking.screen;
 import com.porfiriopartida.exception.ConfigurationValidationException;
 import com.porfiriopartida.screen.application.ScreenApplication;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -12,13 +14,20 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class WindowTimeTracker extends ScreenApplication implements Runnable {
+    private final static Logger LOGGER = LoggerFactory.getLogger(WindowTimeTracker.class);
     private Map<String, Long> appTimeMap;
     private long trackingDelayInMs;
     private long saveDelay = 2000;
     private String application;
+    public ITimeTrackerHandler timeTrackerHandler;
+
     public WindowTimeTracker(){
         appTimeMap = new HashMap<String, Long>();
         trackingDelayInMs = 200;
+    }
+
+    public void setTimeTrackerHandler(ITimeTrackerHandler timeTrackerHandler) {
+        this.timeTrackerHandler = timeTrackerHandler;
     }
 
     public void start() throws IOException, ConfigurationValidationException {
@@ -29,19 +38,23 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
     @Override
     public void update(Observable observable, Object arg) {
         String windowName = arg.toString();
-        System.out.println(String.format("New window name: %s", windowName));
+        LOGGER.debug(String.format("New window name: %s", windowName));
         application = getCommand(windowName);
     }
-
-    public void printMap(){
-        Set<String> keys = appTimeMap.keySet();
-        StringBuilder mapString = new StringBuilder();
-        for (String key : keys){
-            mapString.append(String.format("%s: %s", key, toTime(appTimeMap.get(key))));
-            mapString.append("\n");
+    private long totalTime = 0;
+    public void notifyMap(){
+        if (timeTrackerHandler != null) {
+            timeTrackerHandler.updateTimes(appTimeMap, totalTime);
         }
-
-        System.out.println(mapString);
+        if(LOGGER.isDebugEnabled()){
+            Set<String> keys = appTimeMap.keySet();
+            StringBuilder mapString = new StringBuilder();
+            for (String key : keys){
+                mapString.append(String.format("%s: %s", key, toTime(appTimeMap.get(key))));
+                mapString.append("\n");
+            }
+            LOGGER.debug(mapString.toString());
+        }
     }
 
     private String toTime(Long millis) {
@@ -62,6 +75,7 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    LOGGER.error("error sleeping", e);
                 }
                 continue;
             }
@@ -73,11 +87,12 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                LOGGER.error("error tracking time", e);
             }
 
             if(saveDelay <= 0){
                 saveDelay = this.saveDelay;
-                printMap();
+                notifyMap();
             }
         }
     }
@@ -88,11 +103,26 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
         }
         if(!appTimeMap.containsKey(application)){
             appTimeMap.put(application, trackingDelayInMs);
+
+            if (timeTrackerHandler != null) {
+                timeTrackerHandler.newApplicationLoaded(application, trackingDelayInMs);
+            }
             return;
         }
 
         long val = appTimeMap.get(application);
         long newVal = val + trackingDelayInMs;
+        totalTime += trackingDelayInMs;
         appTimeMap.put(application, newVal);
+
+
+        if (timeTrackerHandler != null) {
+            timeTrackerHandler.updateAppTimeValue(application, newVal);
+        }
+    }
+
+    public void displayErrorMessage(String errorMessage) {
+        LOGGER.error(errorMessage);
+        timeTrackerHandler.displayErrorMessage(errorMessage);
     }
 }
