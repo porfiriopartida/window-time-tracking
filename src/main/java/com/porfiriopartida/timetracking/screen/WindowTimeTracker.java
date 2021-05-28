@@ -17,7 +17,7 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
     private final static Logger LOGGER = LoggerFactory.getLogger(WindowTimeTracker.class);
     private Map<String, Long> appTimeMap;
     private long trackingDelayInMs;
-    private long saveDelay = 2000;
+    private long saveDelay = 1000;
     private String application;
     public ITimeTrackerHandler timeTrackerHandler;
 

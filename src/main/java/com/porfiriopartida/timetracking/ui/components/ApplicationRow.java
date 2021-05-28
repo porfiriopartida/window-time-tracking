@@ -4,6 +4,10 @@ import javax.swing.*;
 
 public class ApplicationRow extends JPanel {
     private JPanel applicationRowPanel;
+    private JProgressBar appProgress;
+    private JLabel appLabel;
+    public long timeValue;
+
 
     public JProgressBar getAppProgress() {
         return appProgress;
@@ -12,11 +16,6 @@ public class ApplicationRow extends JPanel {
     public void setAppProgress(JProgressBar appProgress) {
         this.appProgress = appProgress;
     }
-
-    private JProgressBar appProgress;
-    private JLabel appLabel;
-    public long timeValue;
-
     public long getTimeValue() {
         return timeValue;
     }
@@ -33,11 +32,6 @@ public class ApplicationRow extends JPanel {
     public void setAppName(String appName){
         appLabel.setText(appName);
     }
-//
-//    public void setAppProgress(int n){
-//        appProgress.setValue(n);
-////        appProgress.repaint();
-//    }
 
     public JPanel getApplicationRowPanel() {
         return applicationRowPanel;
@@ -52,12 +46,5 @@ public class ApplicationRow extends JPanel {
     }
     public JLabel getAppLabel() {
         return this.appLabel;
-    }
-
-    public void refresh() {
-        revalidate();
-        repaint();
-        applicationRowPanel.revalidate();
-        applicationRowPanel.repaint();
     }
 }
