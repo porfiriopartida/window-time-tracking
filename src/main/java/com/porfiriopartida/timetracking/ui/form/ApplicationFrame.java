@@ -18,7 +18,6 @@ public class ApplicationFrame extends JFrame implements ITimeTrackerHandler {
     private JPanel applicationsListPanel;
     private GridBagConstraints gbc;
     private TimeTrackingRunner timeTrackingRunner;
-    private String appFormat = "%s %s";
 
     public ApplicationFrame(){
         gbc = new GridBagConstraints();
@@ -52,13 +51,21 @@ public class ApplicationFrame extends JFrame implements ITimeTrackerHandler {
 
     private ApplicationRow buildNewRow(String appName, long appProgress) {
         ApplicationRow applicationRow = new ApplicationRow();
-        String hms = toTime(0l);
-        applicationRow.getAppLabel().setText(String.format(appFormat, appName, hms));
         applicationRow.setAppName(appName);
         applicationRow.getAppProgress().setValue(0);
         applicationRow.setTimeValue(appProgress);
         return applicationRow;
     }
+
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(() -> {
+//            JFrame frame = new ApplicationFrame();
+//            frame.setSize(600, 400);
+//            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//            frame.setTitle("Application Usages");
+//            frame.setVisible(true);
+//        });
+//    }
 
     public void setTimeTrackingRunner(TimeTrackingRunner timeTrackingRunner) {
         this.timeTrackingRunner = timeTrackingRunner;
@@ -69,6 +76,7 @@ public class ApplicationFrame extends JFrame implements ITimeTrackerHandler {
         if(totalTime == 0){
             return;
         }
+        String appFormat = "%s %s";
 
         SwingUtilities.invokeLater(() -> {
 
@@ -81,7 +89,12 @@ public class ApplicationFrame extends JFrame implements ITimeTrackerHandler {
                 applicationRow.getAppProgress().setValue(pct);
                 String hms = toTime(appTime);
                 applicationRow.getAppLabel().setText(String.format(appFormat, key, hms));
+//                applicationRow.getAppLabel().paintImmediately(applicationRow.getAppLabel().getVisibleRect());
+//                applicationRow.refresh();
             }
+//            repaint();
+//            revalidate();
+//            repaint();
         });
     }
 

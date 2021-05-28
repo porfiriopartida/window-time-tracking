@@ -1,6 +1,5 @@
 package com.porfiriopartida.timetracking.app;
 
-import com.formdev.flatlaf.FlatLightLaf;
 import com.porfiriopartida.exception.ConfigurationValidationException;
 import com.porfiriopartida.timetracking.screen.WindowTimeTracker;
 import com.porfiriopartida.timetracking.ui.form.ApplicationFrame;
@@ -10,46 +9,31 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
 public class TimeTrackingRunner implements CommandLineRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeTrackingRunner.class);
     private WindowTimeTracker windowTimeTracker;
-    private ApplicationFrame frame;
-
     @Override
     public void run(String... args) {
-        try {
-            UIManager.setLookAndFeel( new FlatLightLaf() );
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
-        }
-
         setupWindowTimeTrackerAgent();
         setupUIFrame(args);
     }
+    private ApplicationFrame frame;
     private void setupUIFrame(String... args) {
         SwingUtilities.invokeLater(() -> {
             frame = new ApplicationFrame();
             frame.setTimeTrackingRunner(this);
-            //[326, 24]
-            frame.setSize(380, 400);
+            frame.setSize(600, 400);
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             frame.setTitle("Application Usages");
             frame.setVisible(true);
-            frame.setResizable(false);
-            frame.setMenuBar(buildMenu());
 
             windowTimeTracker.setTimeTrackerHandler(frame);
 
             start(args);
         });
-    }
-
-    private MenuBar buildMenu() {
-        return null;
     }
 
     private void setupWindowTimeTrackerAgent() {
