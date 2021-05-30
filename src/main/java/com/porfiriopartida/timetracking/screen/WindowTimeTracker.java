@@ -5,6 +5,7 @@ import com.porfiriopartida.screen.application.ScreenApplication;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Observable;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+@Service
 public class WindowTimeTracker extends ScreenApplication implements Runnable {
     private final static Logger LOGGER = LoggerFactory.getLogger(WindowTimeTracker.class);
     private Map<String, Long> appTimeMap;

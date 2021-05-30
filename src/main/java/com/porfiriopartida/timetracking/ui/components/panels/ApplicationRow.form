@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.porfiriopartida.timetracking.ui.components.ApplicationRow">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.porfiriopartida.timetracking.ui.components.panels.ApplicationRow">
   <grid id="27dc6" binding="applicationRowPanel" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-    <margin top="1" left="10" bottom="1" right="5"/>
+    <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
       <xy x="20" y="20" width="500" height="84"/>
     </constraints>

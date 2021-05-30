@@ -1,0 +1,1 @@
+java -jar 'D:\Java\workspace\window-time-tracking\target\time-tracking-0.0.2-SNAPSHOT.jar' --file D:\Java\workspace\window-time-tracking\src\main\resources\configuration.csv
