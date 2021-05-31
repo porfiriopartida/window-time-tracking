@@ -17,15 +17,17 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class WindowTimeTracker extends ScreenApplication implements Runnable {
     private final static Logger LOGGER = LoggerFactory.getLogger(WindowTimeTracker.class);
-    private Map<String, Long> appTimeMap;
+    private Map<WindowScreen, Long> appTimeMap;
     private long trackingDelayInMs;
-    private long saveDelay = 2000;
-    private String application;
+    private long saveDelay = 500;
+    private long totalTime = 0;
+    private WindowScreen application;
     public ITimeTrackerHandler timeTrackerHandler;
+    private boolean commandFound;
 
     public WindowTimeTracker(){
-        appTimeMap = new HashMap<String, Long>();
-        trackingDelayInMs = 200;
+        appTimeMap = new HashMap<WindowScreen, Long>();
+        trackingDelayInMs = 100;
     }
 
     public void setTimeTrackerHandler(ITimeTrackerHandler timeTrackerHandler) {
@@ -36,23 +38,28 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
         super.start();
         new Thread(this).start();
     }
-
     @Override
     public void update(Observable observable, Object arg) {
         String windowName = arg.toString();
         LOGGER.debug(String.format("New window name: %s", windowName));
-        application = getCommand(windowName);
+        String command = getCommand(windowName);
+        commandFound = !StringUtils.isBlank(command);
+        WindowScreen ws = new WindowScreen();
+        ws.setCommand(commandFound ? command:windowName);
+        ws.setFullPath(windowName);
+        ws.setCommandFound(commandFound);
+        application = ws;
     }
-    private long totalTime = 0;
+
     public void notifyMap(){
         if (timeTrackerHandler != null) {
             timeTrackerHandler.updateTimes(appTimeMap, totalTime);
         }
         if(LOGGER.isDebugEnabled()){
-            Set<String> keys = appTimeMap.keySet();
+            Set<WindowScreen> keys = appTimeMap.keySet();
             StringBuilder mapString = new StringBuilder();
-            for (String key : keys){
-                mapString.append(String.format("%s: %s", key, toTime(appTimeMap.get(key))));
+            for (WindowScreen key : keys){
+                mapString.append(String.format("%s: %s", key.getCommand(), toTime(appTimeMap.get(key))));
                 mapString.append("\n");
             }
             LOGGER.debug(mapString.toString());
@@ -72,7 +79,7 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
     public void run() {
         long saveDelay = 0;
         while(true){
-            if(StringUtils.isEmpty(application)){
+            if(application == null || StringUtils.isEmpty(application.getCommand())){
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -100,7 +107,7 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
     }
 
     private void trackTime() {
-        if(StringUtils.isEmpty(application)){
+        if(StringUtils.isEmpty(application.getCommand())){
             return;
         }
         if(!appTimeMap.containsKey(application)){

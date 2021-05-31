@@ -11,7 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.porfiriopartida:window-listener:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.porfiriopartida:window-listener:1.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna:5.4.0" level="project" />
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna-platform:5.4.0" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:2.5.0" level="project" />

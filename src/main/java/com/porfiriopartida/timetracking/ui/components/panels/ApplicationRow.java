@@ -1,8 +1,5 @@
 package com.porfiriopartida.timetracking.ui.components.panels;
 
-import com.intellij.uiDesigner.core.GridConstraints;
-import com.intellij.uiDesigner.core.GridLayoutManager;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,6 +7,7 @@ public class ApplicationRow extends JPanel {
     private JPanel applicationRowPanel;
     private JProgressBar appProgress;
     private JLabel appLabel;
+    private JLabel hmsLabel;
     public long timeValue;
 
     public JProgressBar getAppProgress() {
@@ -58,6 +56,14 @@ public class ApplicationRow extends JPanel {
         return this.appLabel;
     }
 
+    public JLabel getHmsLabel() {
+        return hmsLabel;
+    }
+
+    public void setHmsLabel(JLabel hmsLabel) {
+        this.hmsLabel = hmsLabel;
+    }
+
     public void refresh() {
         revalidate();
         repaint();
@@ -79,19 +85,44 @@ public class ApplicationRow extends JPanel {
      */
     private void $$$setupUI$$$() {
         applicationRowPanel = new JPanel();
-        applicationRowPanel.setLayout(new GridLayoutManager(1, 3, new Insets(10, 10, 10, 10), -1, -1));
+        applicationRowPanel.setLayout(new GridBagLayout());
         applicationRowPanel.setMinimumSize(new Dimension(326, 24));
         applicationRowPanel.setOpaque(true);
-        applicationRowPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null));
         appLabel = new JLabel();
         appLabel.setEnabled(true);
         appLabel.setHorizontalAlignment(2);
         appLabel.setHorizontalTextPosition(2);
         appLabel.setText("{APPLICATION_NAME}");
-        applicationRowPanel.add(appLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        GridBagConstraints gbc;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        applicationRowPanel.add(appLabel, gbc);
+        hmsLabel = new JLabel();
+        hmsLabel.setEnabled(true);
+        hmsLabel.setHorizontalAlignment(2);
+        hmsLabel.setHorizontalTextPosition(2);
+        hmsLabel.setText("00:00:00");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(0, 5, 0, 5);
+        applicationRowPanel.add(hmsLabel, gbc);
         appProgress = new JProgressBar();
         appProgress.setValue(0);
-        applicationRowPanel.add(appProgress, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 5, 0, 5);
+        applicationRowPanel.add(appProgress, gbc);
     }
 
     /** @noinspection ALL */

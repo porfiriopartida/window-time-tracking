@@ -3,6 +3,7 @@ package com.porfiriopartida.timetracking.ui.components.panels;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.porfiriopartida.timetracking.app.Constants;
+import com.porfiriopartida.timetracking.screen.WindowScreen;
 import com.porfiriopartida.timetracking.ui.components.frame.ApplicationFrame;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +39,14 @@ public class ApplicationsListScreenManager implements IScreenManager {
         applicationsListPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
 
         //For debug purposes v
-        button1.setVisible(false);
-        button1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addNewApplicationRow("Test", rnd.nextInt(100));
-                frame.refreshFrame();
-            }
-        });
+//        button1.setVisible(false);
+//        button1.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                addNewApplicationRow("Test", rnd.nextInt(100));
+//                frame.refreshFrame();
+//            }
+//        });
     }
 
     private void buildGbc() {
@@ -65,8 +66,8 @@ public class ApplicationsListScreenManager implements IScreenManager {
     }
 
 
-    public ApplicationRow addNewApplicationRow(String appName, long appProgress) {
-        ApplicationRow newRow = buildNewRow(appName, appProgress);
+    public ApplicationRow addNewApplicationRow(WindowScreen windowScreen, long appProgress) {
+        ApplicationRow newRow = buildNewRow(windowScreen.getCommand(), appProgress);
 //        ++rowGbc.gridy;
         applicationsListPanel.add(newRow);
 //        applicationsScrollPanel.setPreferredSize(applicationsScrollPanel.getParent().getSize());

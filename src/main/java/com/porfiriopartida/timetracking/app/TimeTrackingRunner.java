@@ -37,7 +37,7 @@ public class TimeTrackingRunner implements CommandLineRunner {
     private void setupUIFrame(String... args) {
         SwingUtilities.invokeLater(() -> {
 //            frame = new ApplicationFrame();
-            frame.setTimeTrackingRunner(this);
+//            frame.setTimeTrackingRunner(this);
             frame.setSize(600, 400);
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             frame.setTitle("Application Usages");

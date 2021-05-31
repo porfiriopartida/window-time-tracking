@@ -5,3 +5,9 @@ spring:
 
 server:
   port: 7778
+
+logging:
+  root:
+    level: DEBUG
+  level:
+    com.porfiriopartida: DEBUG

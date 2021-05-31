@@ -5,11 +5,11 @@ import com.porfiriopartida.timetracking.app.Constants;
 import com.porfiriopartida.timetracking.app.Screen;
 import com.porfiriopartida.timetracking.app.TimeTrackingRunner;
 import com.porfiriopartida.timetracking.screen.ITimeTrackerHandler;
+import com.porfiriopartida.timetracking.screen.WindowScreen;
 import com.porfiriopartida.timetracking.theme.ThemeUtil;
 import com.porfiriopartida.timetracking.ui.components.panels.ApplicationRow;
 import com.porfiriopartida.timetracking.ui.components.menu.TimeTrackingMenu;
 import com.porfiriopartida.timetracking.ui.components.panels.ApplicationsListScreenManager;
-import com.porfiriopartida.timetracking.ui.components.panels.PreferencesScreenManager;
 import com.porfiriopartida.timetracking.ui.components.panels.IScreenManager;
 import com.porfiriopartida.timetracking.ui.events.ITimeTrackMenuListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ApplicationFrame extends JFrame implements ITimeTrackerHandler, ITimeTrackMenuListener {
     private JPanel contentPane;
+    @Autowired
     private TimeTrackingRunner timeTrackingRunner;
     @Qualifier(Constants.Beans.PREFERENCES)
     @Autowired
@@ -33,10 +34,12 @@ public class ApplicationFrame extends JFrame implements ITimeTrackerHandler, ITi
     @Qualifier(Constants.Beans.APPLICATIONS)
     @Autowired
     private IScreenManager applicationsListPanel;
+
     private GridBagConstraints panelsGbc;
+    private Map<WindowScreen, ApplicationRow> appRows;
 
     public ApplicationFrame() {
-        appRows = new HashMap<String, ApplicationRow>();
+        appRows = new HashMap<WindowScreen, ApplicationRow>();
         setupListeners();
         buildGbc();
         setContentPane(contentPane);
@@ -58,35 +61,34 @@ public class ApplicationFrame extends JFrame implements ITimeTrackerHandler, ITi
         SwingUtilities.updateComponentTreeUI(this);
     }
 
-    private ApplicationRow addNewApplicationRow(String appName, long appProgress) {
-        return ((ApplicationsListScreenManager) applicationsListPanel).addNewApplicationRow(appName, appProgress);
+    private ApplicationRow addNewApplicationRow(WindowScreen windowScreen, long appProgress) {
+        return ((ApplicationsListScreenManager) applicationsListPanel).addNewApplicationRow(windowScreen, appProgress);
     }
 
-    public void setTimeTrackingRunner(TimeTrackingRunner timeTrackingRunner) {
-        this.timeTrackingRunner = timeTrackingRunner;
-    }
+//    public void setTimeTrackingRunner(TimeTrackingRunner timeTrackingRunner) {
+//        this.timeTrackingRunner = timeTrackingRunner;
+//    }
 
     @Override
-    public void updateTimes(Map<String, Long> appTimeMap, long totalTime) {
+    public void updateTimes(Map<WindowScreen, Long> appTimeMap, long totalTime) {
         if (totalTime == 0) {
             return;
         }
-        String appFormat = "%s %s";
-
         SwingUtilities.invokeLater(() -> {
+            Set<WindowScreen> keySet = appTimeMap.keySet();
 
-            Set<String> keySet = appTimeMap.keySet();
-
-            for (String key : keySet) {
+            for (WindowScreen key : keySet) {
                 ApplicationRow applicationRow = appRows.get(key);
                 if (applicationRow == null) {
                     break;
                 }
                 long appTime = applicationRow.getTimeValue();
-                int pct = (int) (((double) appTime / totalTime) * 100);
-                applicationRow.getAppProgress().setValue(pct);
                 String hms = toTime(appTime);
-                applicationRow.getAppLabel().setText(String.format(appFormat, key, hms));
+                int pct = (int) (((double) appTime / totalTime) * 100);
+
+                applicationRow.getAppProgress().setValue(pct);
+                applicationRow.getAppLabel().setText(key.getCommand());
+                applicationRow.getHmsLabel().setText(hms);
             }
         });
     }
@@ -100,15 +102,13 @@ public class ApplicationFrame extends JFrame implements ITimeTrackerHandler, ITi
         return hms;
     }
 
-    private Map<String, ApplicationRow> appRows;
-
     @Override
-    public void newApplicationLoaded(String applicationName, long trackingDelayInMs) {
-        appRows.put(applicationName, addNewApplicationRow(applicationName, trackingDelayInMs));
+    public void newApplicationLoaded(WindowScreen windowScreen, long trackingDelayInMs) {
+        appRows.put(windowScreen, addNewApplicationRow(windowScreen, trackingDelayInMs));
     }
 
     @Override
-    public void updateAppTimeValue(String applicationName, long trackingDelayInMs) {
+    public void updateAppTimeValue(WindowScreen applicationName, long trackingDelayInMs) {
         ApplicationRow applicationRow = appRows.get(applicationName);
         applicationRow.setTimeValue(trackingDelayInMs);
     }
