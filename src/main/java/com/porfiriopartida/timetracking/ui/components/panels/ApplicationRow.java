@@ -1,5 +1,7 @@
 package com.porfiriopartida.timetracking.ui.components.panels;
 
+import com.porfiriopartida.timetracking.screen.WindowScreen;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -9,6 +11,16 @@ public class ApplicationRow extends JPanel {
     private JLabel appLabel;
     private JLabel hmsLabel;
     public long timeValue;
+    private WindowScreen windowScreen;
+    private Dimension current;
+    private static Dimension ZERO = new Dimension(0, 0);
+
+    @Override
+    public void setVisible(boolean aFlag) {
+        super.setVisible(aFlag);
+
+        setPreferredSize(aFlag ? current : ZERO);
+    }
 
     public JProgressBar getAppProgress() {
         return appProgress;
@@ -29,16 +41,12 @@ public class ApplicationRow extends JPanel {
     public ApplicationRow() {
         appProgress.setMaximum(100);
         add(applicationRowPanel);
+        current = getPreferredSize();
     }
 
     public void setAppName(String appName) {
         appLabel.setText(appName);
     }
-//
-//    public void setAppProgress(int n){
-//        appProgress.setValue(n);
-////        appProgress.repaint();
-//    }
 
     public JPanel getApplicationRowPanel() {
         return applicationRowPanel;
@@ -69,6 +77,14 @@ public class ApplicationRow extends JPanel {
         repaint();
         applicationRowPanel.revalidate();
         applicationRowPanel.repaint();
+    }
+
+    public WindowScreen getWindowScreen() {
+        return windowScreen;
+    }
+
+    public void setWindowScreen(WindowScreen windowScreen) {
+        this.windowScreen = windowScreen;
     }
 
     {

@@ -23,7 +23,7 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
     private long totalTime = 0;
     private WindowScreen application;
     public ITimeTrackerHandler timeTrackerHandler;
-    private boolean commandFound;
+    private boolean isTrackingCommandFound;
 
     public WindowTimeTracker(){
         appTimeMap = new HashMap<WindowScreen, Long>();
@@ -43,11 +43,11 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
         String windowName = arg.toString();
         LOGGER.debug(String.format("New window name: %s", windowName));
         String command = getCommand(windowName);
-        commandFound = !StringUtils.isBlank(command);
+        boolean isCommandFound = !StringUtils.isBlank(command);
         WindowScreen ws = new WindowScreen();
-        ws.setCommand(commandFound ? command:windowName);
+        ws.setCommand(isCommandFound ? command:windowName);
         ws.setFullPath(windowName);
-        ws.setCommandFound(commandFound);
+        ws.setCommandFound(isCommandFound);
         application = ws;
     }
 
@@ -105,9 +105,9 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
             }
         }
     }
-
     private void trackTime() {
-        if(StringUtils.isEmpty(application.getCommand())){
+        //Should we track or not even if not used?
+        if(StringUtils.isEmpty(application.getCommand())){ // || isTrackingCommandFound && !application.isCommandFound()
             return;
         }
         if(!appTimeMap.containsKey(application)){
@@ -121,7 +121,9 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
 
         long val = appTimeMap.get(application);
         long newVal = val + trackingDelayInMs;
-        totalTime += trackingDelayInMs;
+        if(!isTrackingCommandFound || application.isCommandFound()) {
+            totalTime += trackingDelayInMs;
+        }
         appTimeMap.put(application, newVal);
 
 
@@ -133,5 +135,27 @@ public class WindowTimeTracker extends ScreenApplication implements Runnable {
     public void displayErrorMessage(String errorMessage) {
         LOGGER.error(errorMessage);
         timeTrackerHandler.displayErrorMessage(errorMessage);
+    }
+
+    public boolean isTrackingCommandFound() {
+        return isTrackingCommandFound;
+    }
+
+    public void setTrackingCommandFound(boolean trackingCommandFound) {
+        if(this.isTrackingCommandFound != trackingCommandFound){
+            reloadTotalTime(trackingCommandFound);
+        }
+        isTrackingCommandFound = trackingCommandFound;
+    }
+
+    private void reloadTotalTime(boolean trackingCommandFound) {
+        Set<WindowScreen> keys = appTimeMap.keySet();
+        StringBuilder mapString = new StringBuilder();
+        totalTime = 0;
+        for (WindowScreen key : keys){
+            if(!trackingCommandFound || key.isCommandFound()){
+                totalTime += appTimeMap.get(key);
+            }
+        }
     }
 }

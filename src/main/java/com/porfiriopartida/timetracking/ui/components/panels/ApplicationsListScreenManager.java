@@ -30,7 +30,6 @@ public class ApplicationsListScreenManager implements IScreenManager {
     private ApplicationFrame frame;
     private JScrollPane applicationsScrollPanel;
     private JPanel applicationsListPanel;
-    private JButton button1;
     private JPanel contentPane;
 
     public ApplicationsListScreenManager() {
@@ -68,13 +67,11 @@ public class ApplicationsListScreenManager implements IScreenManager {
 
     public ApplicationRow addNewApplicationRow(WindowScreen windowScreen, long appProgress) {
         ApplicationRow newRow = buildNewRow(windowScreen.getCommand(), appProgress);
-//        ++rowGbc.gridy;
+        newRow.setWindowScreen(windowScreen);
         applicationsListPanel.add(newRow);
-//        applicationsScrollPanel.setPreferredSize(applicationsScrollPanel.getParent().getSize());
         Dimension dimension = applicationsScrollPanel.getParent().getSize();
         dimension.height -= 50;
         applicationsScrollPanel.setPreferredSize(dimension);
-//        applicationsListPanel.setPreferredSize(dimension);
         return newRow;
     }
 
@@ -113,15 +110,12 @@ public class ApplicationsListScreenManager implements IScreenManager {
      */
     private void $$$setupUI$$$() {
         contentPane = new JPanel();
-        contentPane.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        contentPane.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         applicationsScrollPanel = new JScrollPane();
         contentPane.add(applicationsScrollPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         applicationsListPanel = new JPanel();
         applicationsListPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         applicationsScrollPanel.setViewportView(applicationsListPanel);
-        button1 = new JButton();
-        button1.setText("Button");
-        contentPane.add(button1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /** @noinspection ALL */

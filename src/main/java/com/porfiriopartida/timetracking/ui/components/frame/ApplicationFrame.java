@@ -6,6 +6,7 @@ import com.porfiriopartida.timetracking.app.Screen;
 import com.porfiriopartida.timetracking.app.TimeTrackingRunner;
 import com.porfiriopartida.timetracking.screen.ITimeTrackerHandler;
 import com.porfiriopartida.timetracking.screen.WindowScreen;
+import com.porfiriopartida.timetracking.screen.WindowTimeTracker;
 import com.porfiriopartida.timetracking.theme.ThemeUtil;
 import com.porfiriopartida.timetracking.ui.components.panels.ApplicationRow;
 import com.porfiriopartida.timetracking.ui.components.menu.TimeTrackingMenu;
@@ -27,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class ApplicationFrame extends JFrame implements ITimeTrackerHandler, ITimeTrackMenuListener {
     private JPanel contentPane;
     @Autowired
-    private TimeTrackingRunner timeTrackingRunner;
+    private WindowTimeTracker windowTimeTracker;
     @Qualifier(Constants.Beans.PREFERENCES)
     @Autowired
     private IScreenManager applicationsPreferencesPanel;
@@ -64,10 +65,6 @@ public class ApplicationFrame extends JFrame implements ITimeTrackerHandler, ITi
     private ApplicationRow addNewApplicationRow(WindowScreen windowScreen, long appProgress) {
         return ((ApplicationsListScreenManager) applicationsListPanel).addNewApplicationRow(windowScreen, appProgress);
     }
-
-//    public void setTimeTrackingRunner(TimeTrackingRunner timeTrackingRunner) {
-//        this.timeTrackingRunner = timeTrackingRunner;
-//    }
 
     @Override
     public void updateTimes(Map<WindowScreen, Long> appTimeMap, long totalTime) {
@@ -129,6 +126,40 @@ public class ApplicationFrame extends JFrame implements ITimeTrackerHandler, ITi
                 case SET_THEME_DARK_NIMBUS:
                     ThemeUtil.setDarkNimbusTheme(this);
                     break;
+                case VIEW_ALL_ITEMS:
+                    showItems(false);
+                    break;
+                case VIEW_CONFIGURED_ITEMS:
+                    showItems(true);
+                    break;
+                case FILE_SAVE:
+                    fileSave();
+                case FILE_OPEN:
+                    fileOpen();
+                    break;
+            }
+        });
+    }
+
+    private void fileOpen() {
+
+    }
+
+    private void fileSave() {
+
+    }
+
+    private void showItems(boolean configured) {
+        SwingUtilities.invokeLater(() -> {
+            this.windowTimeTracker.setTrackingCommandFound(configured);
+            Set<WindowScreen> keySet = appRows.keySet();
+
+            for (WindowScreen key : keySet) {
+                ApplicationRow applicationRow = appRows.get(key);
+                if (applicationRow == null) {
+                    continue;
+                }
+                applicationRow.setVisible(configured ? applicationRow.getWindowScreen().isCommandFound() : true);
             }
         });
     }

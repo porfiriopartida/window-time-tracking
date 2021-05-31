@@ -36,9 +36,17 @@ public class TimeTrackingMenu extends JMenuBar {
 
         viewMenu.addSeparator();
 
+        JMenuItem viewAllItems = viewMenu.add("All");
+        viewAllItems.setActionCommand(String.valueOf(Command.VIEW_ALL_ITEMS));
+        JMenuItem viewConfiguredItems = viewMenu.add("Configured");
+        viewConfiguredItems.setActionCommand(String.valueOf(Command.VIEW_CONFIGURED_ITEMS));
+
+        viewMenu.addSeparator();
+
         viewMenu.add(buildThemesMenuItem());
 
         addGenericScreenMultiMenuItemActionListener(viewApplicationsItem);
+        addGenericCommandMultiMenuItemActionListener(viewAllItems, viewConfiguredItems);
 
 //        viewMenu.addSeparator();
 

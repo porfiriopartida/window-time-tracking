@@ -1,8 +1,9 @@
 package com.porfiriopartida.timetracking.screen;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class WindowScreen {
+public class WindowScreen implements Serializable {
     private String fullPath;
     private String command;
     private long value;
@@ -22,18 +23,15 @@ public class WindowScreen {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         WindowScreen that = (WindowScreen) o;
-        if(this.command == null || that.command == null) return false;
-        if (this.command.equals(that.getCommand())) return true;
+        if (this.command.equals(that.command)) return true;
+        if (this.fullPath.equals(that.fullPath)) return true;
 
-        return value == that.value &&
-                isCommandFound == that.isCommandFound &&
-                Objects.equals(fullPath, that.fullPath) &&
-                Objects.equals(command, that.command);
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fullPath, command, value, isCommandFound);
+        return Objects.hash(command);
     }
 
     public String getFullPath() {
