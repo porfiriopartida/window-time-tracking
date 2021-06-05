@@ -2,22 +2,17 @@ package com.porfiriopartida.timetracking.ui.components.panels;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.porfiriopartida.awt.layout.VerticalLayout;
 import com.porfiriopartida.timetracking.app.Constants;
 import com.porfiriopartida.timetracking.screen.WindowScreen;
+import com.porfiriopartida.timetracking.screen.WindowTimeTracker;
 import com.porfiriopartida.timetracking.ui.components.frame.ApplicationFrame;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.ApplicationContextFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import com.porfiriopartida.awt.layout.VerticalLayout;
 import java.util.Random;
 
 
@@ -31,6 +26,8 @@ public class ApplicationsListScreenManager implements IScreenManager {
     private JScrollPane applicationsScrollPanel;
     private JPanel applicationsListPanel;
     private JPanel contentPane;
+    @Autowired
+    private WindowTimeTracker windowTimeTracker;
 
     public ApplicationsListScreenManager() {
         rnd = new Random();
@@ -56,18 +53,21 @@ public class ApplicationsListScreenManager implements IScreenManager {
         rowGbc.weighty = 1;
     }
 
-    private ApplicationRow buildNewRow(String appName, long appProgress) {
+    private ApplicationRow buildNewRow(WindowScreen screen, long appProgress) {
         ApplicationRow applicationRow = new ApplicationRow();
-        applicationRow.setAppName(appName);
+        applicationRow.setAppName(screen.getCommand());
         applicationRow.getAppProgress().setValue(0);
         applicationRow.setTimeValue(appProgress);
+        applicationRow.setWindowScreen(screen);
+
+        applicationRow.setVisible(windowTimeTracker.isTrackingCommandFound() ? screen.isCommandFound() : true);
         return applicationRow;
     }
 
 
     public ApplicationRow addNewApplicationRow(WindowScreen windowScreen, long appProgress) {
-        ApplicationRow newRow = buildNewRow(windowScreen.getCommand(), appProgress);
-        newRow.setWindowScreen(windowScreen);
+        ApplicationRow newRow = buildNewRow(windowScreen, appProgress);
+//        newRow.setWindowScreen(windowScreen);
         applicationsListPanel.add(newRow);
         Dimension dimension = applicationsScrollPanel.getParent().getSize();
         dimension.height -= 50;

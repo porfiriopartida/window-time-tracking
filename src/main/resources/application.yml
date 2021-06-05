@@ -8,6 +8,6 @@ server:
 
 logging:
   root:
-    level: DEBUG
+    level: WARNING
   level:
-    com.porfiriopartida: DEBUG
+    com.porfiriopartida: WARNING
